@@ -18,11 +18,9 @@ public class Event {
 
 
     public Event() {
-
     }
 
-    public Event(Long eventId, String eventName, String venue, LocalDate date, User organizer, List<User> participants) {
-        this.eventId = eventId;
+    public Event(String eventName, String venue, LocalDate date, User organizer) {
         this.eventName = eventName;
         this.venue = venue;
         this.date = date;
