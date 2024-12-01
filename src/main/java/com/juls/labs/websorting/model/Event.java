@@ -1,5 +1,7 @@
 package com.juls.labs.websorting.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,6 +10,8 @@ public class Event {
     private Long eventId;
     private String eventName;
     private String venue;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
     private User organizer;
     private List<User> participants;

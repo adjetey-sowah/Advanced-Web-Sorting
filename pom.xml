@@ -69,6 +69,12 @@
       <version>6.0.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.17.2</version>
+    </dependency>
+
     <!-- Add these dependencies for logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -128,5 +134,18 @@
         </plugin>
       </plugins>
     </pluginManagement>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                <compilerArgs>
+                  <arg>-parameters</arg>
+                </compilerArgs>
+                  <source>10</source>
+                  <target>10</target>
+              </configuration>
+          </plugin>
+      </plugins>
   </build>
 </project>
