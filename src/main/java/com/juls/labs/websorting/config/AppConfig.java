@@ -69,6 +69,4 @@ public class AppConfig {
         return new EventController(eventService(), organzier());
     }
 
-
-
 }

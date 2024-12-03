@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,26 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
-@RequestMapping
+@Controller
+@RequestMapping("/sorting")
 public class HelloController {
 
-    @Autowired
-    @Qualifier("part")
-    private User participant;
 
-    @GetMapping("/greet")
-    public ResponseEntity<Map<String,String>> home(){
-        Map<String,String> response = new HashMap<>();
-        response.put("message", "Hello world");
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
+    @GetMapping("/home")
+    public String home(){
+        return "home";
     }
 
-    @GetMapping("names")
-    public ResponseEntity<User> pname(){
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(participant);
-    }
+
 }

@@ -1,15 +1,16 @@
 package com.juls.labs.websorting.controller;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
+
 import com.juls.labs.websorting.model.Event;
-import com.juls.labs.websorting.model.Organizer;
 import com.juls.labs.websorting.model.User;
 import com.juls.labs.websorting.service.impl.EventServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,10 +33,16 @@ public class EventController {
 
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity<Event> createEvent(@RequestBody Event event){
+    public ResponseEntity<EntityModel<Event>> createEvent(@RequestBody Event event){
         var newEvent = this.eventService.createEvent(event);
         newEvent.setOrganizer(organizer);
-        return ResponseEntity.ok().body(newEvent);
+
+        EntityModel<Event> eventModel = EntityModel.of(newEvent,
+                linkTo(methodOn(EventController.class).getEventById(newEvent.getEventId())).withSelfRel(),
+                linkTo(methodOn(EventController.class).allEvents()).withRel("all")
+                );
+
+        return ResponseEntity.ok().body(eventModel);
     }
 
     @GetMapping("/all")
@@ -44,12 +51,13 @@ public class EventController {
         return ResponseEntity.ok(this.eventService.getAllEvents());
     }
 
-    @GetMapping("/{eventId}")
+    @GetMapping("/")
     @ResponseBody
-    public ResponseEntity<Optional<Event>>  getEventById(@PathVariable Long eventId){
+    public ResponseEntity<Optional<Event>>  getEventById(@RequestParam(name = "eventId") Long eventId ){
         return ResponseEntity.ok(this.eventService.getEventById(eventId));
     }
 
 
 
 }
+
