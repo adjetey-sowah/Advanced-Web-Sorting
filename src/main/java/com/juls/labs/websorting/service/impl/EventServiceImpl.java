@@ -1,20 +1,27 @@
 package com.juls.labs.websorting.service.impl;
 
 import com.juls.labs.websorting.model.Event;
+import com.juls.labs.websorting.repository.EventRepository;
 import com.juls.labs.websorting.repository.impl.EventRepositoryImpl;
 import com.juls.labs.websorting.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class EventServiceImpl implements EventService {
 
 
     @Autowired
-    private  EventRepositoryImpl eventRepository;
+    private final  EventRepositoryImpl eventRepository;
+
+    public EventServiceImpl(EventRepositoryImpl eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
 
     @Override
     public Event createEvent(Event event) {

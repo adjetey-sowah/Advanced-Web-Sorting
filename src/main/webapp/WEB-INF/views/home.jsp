@@ -1,462 +1,363 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: JuliusAdjeteySowah
-  Date: 02/12/2024
-  Time: 10:14 am
-  To change this template use File | Settings | File Templates.
---%>
-
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
+  <title>EventHub - Manage Your Events</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Algorithm Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #2c3e50;
-      --secondary: #3498db;
-      --accent: #e74c3c;
-      --background: #ecf0f1;
+      --primary: #2e3192;
+      --secondary: #1bbc9b;
+      --background: #f8f9fa;
+      --text: #2c3e50;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--background);
-      color: var(--primary);
-      min-height: 100vh;
-      padding: 2rem;
+      color: var(--text);
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      padding: 2rem;
     }
 
     .header {
-      text-align: center;
-      margin-bottom: 2rem;
-      padding: 1rem;
       background: var(--primary);
       color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
     }
 
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .tabs {
+      display: flex;
       gap: 1rem;
       margin-bottom: 2rem;
     }
 
-    .control-group {
+    .tab {
+      padding: 0.8rem 1.5rem;
       background: white;
-      padding: 1rem;
+      border: none;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
     }
 
-    .btn {
+    .tab.active {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .event-image {
+      height: 200px;
+      background: var(--primary);
+      position: relative;
+    }
+
+    .event-date {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--secondary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .event-content {
+      padding: 1.5rem;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .event-description {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .event-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: #f8f9fa;
+    }
+
+    .create-event-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
       background: var(--secondary);
       color: white;
       border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 5px;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-      font-size: 1rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .create-event-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
     }
 
-    .btn:hover {
-      background: #2980b9;
-      transform: translateY(-2px);
-    }
-
-    .visualization-container {
-      height: 400px;
+    .modal-content {
       background: white;
-      border-radius: 8px;
-      padding: 1rem;
-      position: relative;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
     }
 
-    .array-bar {
-      position: absolute;
-      bottom: 0;
-      background: var(--secondary);
-      transition: height 0.3s, background 0.3s;
+    .form-group {
+      margin-bottom: 1rem;
     }
 
-    .array-bar.comparing {
-      background: var(--accent);
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
     }
 
-    .array-bar.sorted {
-      background: #2ecc71;
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .metric-card {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .metric-value {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--secondary);
-    }
-
-    select, input {
+    .form-group input,
+    .form-group textarea {
       width: 100%;
-      padding: 0.5rem;
-      margin: 0.5rem 0;
+      padding: 0.8rem;
       border: 1px solid #ddd;
       border-radius: 4px;
-      font-size: 1rem;
     }
 
-    .legend {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .legend-color {
-      width: 20px;
-      height: 20px;
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
       border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #ddd;
+      color: var(--text);
+    }
+
+    @media (max-width: 768px) {
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>Algorithm Visualizer</h1>
-    <p>Watch sorting algorithms in action!</p>
-  </div>
-
-  <div class="controls">
-    <div class="control-group">
-      <label for="arraySize">Array Size:</label>
-      <input type="range" id="arraySize" min="10" max="100" value="50">
-      <span id="arraySizeValue">50</span>
-    </div>
-
-    <div class="control-group">
-      <label for="algorithm">Algorithm:</label>
-      <select id="algorithm"></select>
-    </div>
-
-    <div class="control-group">
-      <label for="speed">Animation Speed:</label>
-      <input type="range" id="speed" min="1" max="100" value="50">
-      <span id="speedValue">50</span>
-    </div>
-
-    <div class="control-group">
-      <button class="btn" id="generateBtn">Generate New Array</button>
-      <button class="btn" id="sortBtn" style="margin-top: 0.5rem;">Start Sorting</button>
+<header class="header">
+  <div class="container header-content">
+    <div class="logo">EventHub</div>
+    <div class="tabs">
+      <button class="tab active" onclick="showEvents('all')">All Events</button>
+      <button class="tab" onclick="showEvents('upcoming')">Upcoming Events</button>
     </div>
   </div>
+</header>
 
-  <div class="visualization-container" id="visualizer"></div>
-
-  <div class="metrics">
-    <div class="metric-card">
-      <h3>Comparisons</h3>
-      <div class="metric-value" id="comparisons">0</div>
-    </div>
-    <div class="metric-card">
-      <h3>Swaps</h3>
-      <div class="metric-value" id="swaps">0</div>
-    </div>
-    <div class="metric-card">
-      <h3>Time Elapsed</h3>
-      <div class="metric-value" id="timeElapsed">0.00s</div>
-    </div>
+<main class="container">
+  <div class="events-grid" id="events-container">
+    <!-- Events will be dynamically inserted here -->
   </div>
+</main>
 
-  <div class="legend">
-    <div class="legend-item">
-      <div class="legend-color" style="background: var(--secondary);"></div>
-      <span>Unsorted</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color" style="background: var(--accent);"></div>
-      <span>Comparing</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-color" style="background: #2ecc71;"></div>
-      <span>Sorted</span>
-    </div>
+<button class="create-event-btn" onclick="showCreateEventModal()">+</button>
+
+<div class="modal" id="createEventModal">
+  <div class="modal-content">
+    <h2>Create New Event</h2>
+    <form id="createEventForm" onsubmit="createEvent(event)">
+      <div class="form-group">
+        <label for="eventName">Event Name</label>
+        <input type="text" id="eventName" required>
+      </div>
+      <div class="form-group">
+        <label for="eventDescription">Description</label>
+        <textarea id="eventDescription" rows="4" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="eventDate">Date</label>
+        <input type="datetime-local" id="eventDate" required>
+      </div>
+      <div class="form-group">
+        <label for="eventLocation">Location</label>
+        <input type="text" id="eventLocation" required>
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="hideCreateEventModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Event</button>
+      </div>
+    </form>
   </div>
 </div>
 
 <script>
-  class SortingVisualizer {
-    constructor() {
-      this.array = [];
-      this.visualization = document.getElementById('visualizer');
-      this.comparisons = 0;
-      this.swaps = 0;
-      this.startTime = 0;
-      this.timeInterval = null;
-      this.isSorting = false;
+  let currentEvents = [];
 
-      this.initializeControls();
-      this.loadAlgorithms();
-      this.generateNewArray();
-    }
-
-    initializeControls() {
-      document.getElementById('generateBtn').addEventListener('click', () => this.generateNewArray());
-      document.getElementById('sortBtn').addEventListener('click', () => this.startSorting());
-
-      const arraySizeInput = document.getElementById('arraySize');
-      arraySizeInput.addEventListener('input', (e) => {
-        document.getElementById('arraySizeValue').textContent = e.target.value;
-        this.generateNewArray();
-      });
-
-      const speedInput = document.getElementById('speed');
-      speedInput.addEventListener('input', (e) => {
-        document.getElementById('speedValue').textContent = e.target.value;
-      });
-    }
-
-    async loadAlgorithms() {
-      try {
-        const response = await fetch('/WebSortingAlgorithm_war/api/v1/sorting/algorithms');
-        const algorithms = await response.json();
-        const select = document.getElementById('algorithm');
-        algorithms.forEach(algo => {
-          const option = document.createElement('option');
-          option.value = algo;
-          option.textContent = algo;
-          select.appendChild(option);
-        });
-      } catch (error) {
-        console.error('Failed to load algorithms:', error);
-      }
-    }
-
-    async generateNewArray() {
-      if (this.isSorting) return;
-
-      const size = document.getElementById('arraySize').value;
-      try {
-        const response = await fetch("/WebSortingAlgorithm_war/api/v1/sorting/generate?size=" + size + "");
-        this.array = await response.json();
-        this.resetMetrics();
-        this.renderArray();
-      } catch (error) {
-        console.error('Failed to generate array:', error);
-      }
-    }
-
-    resetMetrics() {
-      this.comparisons = 0;
-      this.swaps = 0;
-      document.getElementById('comparisons').textContent = '0';
-      document.getElementById('swaps').textContent = '0';
-      document.getElementById('timeElapsed').textContent = '0.00s';
-      if (this.timeInterval) clearInterval(this.timeInterval);
-    }
-
-    renderArray() {
-      this.visualization.innerHTML = '';
-      const width = this.visualization.clientWidth;
-      const height = this.visualization.clientHeight;
-      const barWidth = (width / this.array.length) - 1;
-
-      this.array.forEach((value, index) => {
-        const bar = document.createElement('div');
-        bar.className = 'array-bar';
-        bar.style = "width: " + barWidth + "px; left: " + (index * (barWidth + 1)) + "px;";
-        bar.style.height = (value / Math.max.apply(null, this.array)) * (height - 20) + "px";
-        bar.textContent = value.toString();
-        this.visualization.appendChild(bar);
-      });
-    }
-
-
-    async startSorting() {
-      document.getElementById('sortBtn').addEventListener('click', () => this.startSorting());
-      if (this.isSorting) return;
-      this.isSorting = true;
-      this.resetMetrics();
-      this.startTime = Date.now();
-
-      this.timeInterval = setInterval(() => {
-        const elapsed = (Date.now() - this.startTime) / 1000;
-        document.getElementById('timeElapsed').textContent = elapsed.toFixed(2) + "s";
-      }, 10);
-
-      const algorithm = document.getElementById('algorithm').value;
-      console.log("This is the array\n", this.array, " \nAnd this is the algorithm \n", algorithm);
-      try {
-        const response = await fetch('/WebSortingAlgorithm_war/api/v1/sorting/sort', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            array: this.array,
-            algorithm: algorithm
-          })
-        });
-
-        const result = await response.json();
-        console.log("Result ", result);
-        await this.animateSorting(result);
-        this.visualization.firstChild.remove();
-      } catch (error) {
-        console.error('Sorting failed:', error);
-      }
-
-      this.isSorting = false;
-      clearInterval(this.timeInterval);
-    }
-
-// Ensure `renderResult` is part of the class
-     visualizeArray(array) {
-      const container = document.getElementById('arrayContainer');
-      container.innerHTML = '';
-
-      const maxVal = Math.max.apply(null, array);
-
-      array.forEach(value => {
-        const bar = document.createElement('div');
-        bar.className = 'bar';
-        bar.style ="height : "+(value / maxVal) * 100 +"%;";
-        bar.textContent = value;
-        container.appendChild(bar);
-
-      });
-    }
-
-
-
-    async animateSorting(result) {
-      // Validate the result
-      if (!result || !result.array) {
-        console.error('No valid sorting result received');
-        return;
-      }
-
-      const { array, comparisons, swaps, executionTime } = result;
-
-      // Ensure the array is not empty
-      if (array.length === 0) {
-        console.error('No data to animate');
-        return;
-      }
-
-      // Display the number of comparisons and swaps
-      this.comparisons = comparisons;
-      this.swaps = swaps;
-      document.getElementById('comparisons').textContent = this.comparisons;
-      document.getElementById('swaps').textContent = this.swaps;
-      document.getElementById('timeElapsed').textContent = executionTime + "ms";
-
-      const speed = 101 - document.getElementById('speed').value;
-      const bars = Array.from(document.getElementsByClassName('array-bar'));
-
-      if (!bars.length) {
-        console.error('No bars found for animation');
-        return;
-      }
-
-      try {
-        // Perform Bubble Sort animation
-        for (let i = 0; i < array.length - 1; i++) {
-          for (let j = 0; j < array.length - i - 1; j++) {
-            if (!this.isSorting) break;
-
-            // Highlight bars being compared
-            const barJ = bars[j];
-            const barJNext = bars[j + 1];
-            barJ.classList.add('comparing');
-            barJNext.classList.add('comparing');
-            await this.sleep(speed);
-
-            // Swap if necessary
-            if (array[j] > array[j + 1]) {
-              [array[j], array[j + 1]] = [array[j + 1], array[j]];
-
-              // Update the bar heights
-              // Update the bar heights
-              const tempHeight = barJ.style.height;
-              barJ.style = "height :"+ barJNext.style.height+"px;";
-              barJNext.style = "height: " + tempHeight+"px;";
-
-              // Update the swaps count
-              this.swaps++;
-              document.getElementById('swaps').textContent = this.swaps;
-            }
-
-            // Remove comparison highlight
-            barJ.classList.remove('comparing');
-            barJNext.classList.remove('comparing');
-          }
-
-          // Mark the last sorted element
-          bars[array.length - i - 1].classList.add('sorted');
-        }
-
-        // Mark the first element as sorted after the loop
-        bars[0].classList.add('sorted');
-
-        // Clear unsorted array bars
-        this.visualization.innerHTML = '';
-
-        // Render the sorted array in the correct order
-        this.visualizeArray(array);
-
-      } catch (error) {
-        console.error('Animation error:', error);
-      }
-    }
-
-
-
-    sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+  async function loadEvents(type = 'all') {
+    try {
+      const endpoint = type === 'upcoming' ? '/WebSortingAlgorithm_war/events/upcoming' : '/WebSortingAlgorithm_war/events/all';
+      const response = await fetch(endpoint);
+      const events = await response.json();
+      currentEvents = events;
+      displayEvents(events);
+    } catch (error) {
+      console.error('Error loading events:', error);
     }
   }
 
-  // Initialize the visualizer when the page loads
-  document.addEventListener('DOMContentLoaded', () => {
-    new SortingVisualizer();
-  });
+  function displayEvents(events) {
+    const container = document.getElementById('events-container');
+    container.innerHTML = '';
+
+    events.forEach(event => {
+      const eventDate = new Date(event.eventDate);
+      const card = document.createElement('div');
+      card.className = 'event-card';
+      card.innerHTML =
+              '<div class="event-image">' +
+              '<div class="event-date">' + eventDate.toLocaleDateString() + '</div>' +
+              '</div>' +
+              '<div class="event-content">' +
+              '<h3 class="event-title">' + event.eventName + '</h3>' +
+              '<p class="event-description">' + event.description + '</p>' +
+              '</div>' +
+              '<div class="event-footer">' +
+              '<div>' + event.location + '</div>' +
+              '<div>Organizer: ' + (event.organizer && event.organizer.name ? event.organizer.name : 'Unknown') + '</div>' +
+              '</div>';
+
+      container.appendChild(card);
+    });
+  }
+
+  function showEvents(type) {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+    loadEvents(type);
+  }
+
+  function showCreateEventModal() {
+    document.getElementById('createEventModal').style.display = 'flex';
+  }
+
+  function hideCreateEventModal() {
+    document.getElementById('createEventModal').style.display = 'none';
+  }
+
+  async function createEvent(event) {
+    event.preventDefault();
+
+    const eventData = {
+      eventName: document.getElementById('eventName').value,
+      description: document.getElementById('eventDescription').value,
+      eventDate: new Date(document.getElementById('eventDate').value).toISOString(),
+      location: document.getElementById('eventLocation').value
+    };
+
+    try {
+      const response = await fetch('/WebSortingAlgorithm_war/events/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData)
+      });
+
+      if (response.ok) {
+        hideCreateEventModal();
+        loadEvents();
+        document.getElementById('createEventForm').reset();
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
+  }
+
+  // Initialize the page
+  loadEvents();
 </script>
 </body>
 </html>

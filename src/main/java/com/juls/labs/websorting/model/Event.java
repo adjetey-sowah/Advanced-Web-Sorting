@@ -3,6 +3,7 @@ package com.juls.labs.websorting.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
@@ -25,7 +26,7 @@ public class Event {
         this.venue = venue;
         this.date = date;
         this.organizer = organizer;
-        this.participants = participants;
+        this.participants = new ArrayList<>();
     }
 
     public Long getEventId() {

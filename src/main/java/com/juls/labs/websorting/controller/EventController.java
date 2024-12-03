@@ -38,7 +38,7 @@ public class EventController {
         newEvent.setOrganizer(organizer);
 
         EntityModel<Event> eventModel = EntityModel.of(newEvent,
-                linkTo(methodOn(EventController.class).getEventById(newEvent.getEventId())).withSelfRel(),
+                linkTo(methodOn(EventController.class).findEventById(String.valueOf(newEvent.getEventId()))).withSelfRel(),
                 linkTo(methodOn(EventController.class).allEvents()).withRel("all")
                 );
 
@@ -51,10 +51,17 @@ public class EventController {
         return ResponseEntity.ok(this.eventService.getAllEvents());
     }
 
-    @GetMapping("/")
+
+    @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Optional<Event>>  getEventById(@RequestParam(name = "eventId") Long eventId ){
-        return ResponseEntity.ok(this.eventService.getEventById(eventId));
+    public ResponseEntity<Optional<Event>>  findEventById(@PathVariable String id){
+        return ResponseEntity.ok(this.eventService.getEventById(Long.parseLong(id)));
+    }
+
+    @GetMapping("/upcoming")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getUpcomingEvents(){
+        return ResponseEntity.ok(this.eventService.getUpcomingEvents());
     }
 
 
