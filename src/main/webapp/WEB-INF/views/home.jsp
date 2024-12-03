@@ -273,7 +273,7 @@
 
       const size = document.getElementById('arraySize').value;
       try {
-        const response = await fetch("/WebSortingAlgorithm_war/api/v1/sorting/generate?size="+size+"");
+        const response = await fetch("/WebSortingAlgorithm_war/api/v1/sorting/generate?size=" + size + "");
         this.array = await response.json();
         this.resetMetrics();
         this.renderArray();
@@ -308,9 +308,6 @@
     }
 
 
-
-
-
     async startSorting() {
       document.getElementById('sortBtn').addEventListener('click', () => this.startSorting());
       if (this.isSorting) return;
@@ -324,7 +321,7 @@
       }, 10);
 
       const algorithm = document.getElementById('algorithm').value;
-      console.log("This is the array\n",this.array," \nAnd this is the algorithm \n",algorithm);
+      console.log("This is the array\n", this.array, " \nAnd this is the algorithm \n", algorithm);
       try {
         const response = await fetch('/WebSortingAlgorithm_war/api/v1/sorting/sort', {
           method: 'POST',
@@ -338,7 +335,7 @@
         });
 
         const result = await response.json();
-        console.log("Result " , result);
+        console.log("Result ", result);
         await this.animateSorting(result);
         this.visualization.firstChild.remove();
       } catch (error) {
@@ -350,30 +347,22 @@
     }
 
 // Ensure `renderResult` is part of the class
-    renderResult(result) {
-      // Clear the visualization container
-      this.visualization.innerHTML = '';
+     visualizeArray(array) {
+      const container = document.getElementById('arrayContainer');
+      container.innerHTML = '';
 
-      // Calculate dimensions for the array bars
-      const width = this.visualization.clientWidth;
-      const height = this.visualization.clientHeight;
-      const barWidth = (width / result.length) - 1;
+      const maxVal = Math.max.apply(null, array);
 
-      // Iterate over the sorted array to render bars
-      result.forEach((value, index) => {
+      array.forEach(value => {
         const bar = document.createElement('div');
-        bar.className = 'array-bar sorted'; // Add 'sorted' class for consistent styling
-        bar.style.width = barWidth + "px";
-        bar.style.left = (index * (barWidth + 1)) + "px";
-        bar.style= "height :"+ ((value / Math.max(...result)) * (height - 20)) + "px;";
+        bar.className = 'bar';
+        bar.style ="height : "+(value / maxVal) * 100 +"%;";
+        bar.textContent = value;
+        container.appendChild(bar);
 
-        // Optional: Add the value as text inside the bar
-        bar.textContent = value.toString();
-
-        // Append the bar to the visualization container
-        this.visualization.appendChild(bar);
       });
     }
+
 
 
     async animateSorting(result) {
@@ -450,12 +439,14 @@
         this.visualization.innerHTML = '';
 
         // Render the sorted array in the correct order
-        await this.renderResult(array);
+        this.visualizeArray(array);
 
       } catch (error) {
         console.error('Animation error:', error);
       }
     }
+
+
 
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
