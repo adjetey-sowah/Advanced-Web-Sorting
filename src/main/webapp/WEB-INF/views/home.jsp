@@ -288,11 +288,15 @@
   }
 
   function displayEvents(events) {
+
+
+
+
     const container = document.getElementById('events-container');
     container.innerHTML = '';
 
     events.forEach(event => {
-      const eventDate = new Date(event.eventDate);
+      const eventDate = new Date(event.date);
       const card = document.createElement('div');
       card.className = 'event-card';
       card.innerHTML =
@@ -304,8 +308,8 @@
               '<p class="event-description">' + event.description + '</p>' +
               '</div>' +
               '<div class="event-footer">' +
-              '<div>' + event.location + '</div>' +
-              '<div>Organizer: ' + (event.organizer && event.organizer.name ? event.organizer.name : 'Unknown') + '</div>' +
+              '<div>' + event.venue + '</div>' +
+              '<div>Organizer: ' + (event.organizer.username && event.organizer.username ? event.organizer.username : 'Unknown') + '</div>' +
               '</div>';
 
       container.appendChild(card);

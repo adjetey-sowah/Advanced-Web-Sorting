@@ -35,6 +35,8 @@ public class EventServiceImpl implements EventService {
         return this.eventRepository.findById(eventId);
     }
 
+
+
     @Override
     public List<Event> getAllEvents() {
         return this.eventRepository.findAll();
@@ -64,4 +66,5 @@ public class EventServiceImpl implements EventService {
     public List<Event> getEventByDate(LocalDate eventDate) {
         return this.eventRepository.getEventByDate(eventDate);
     }
+
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Repository
 public class EventRepositoryImpl implements EventRepository {
 
-    private Map<Long, Event> events = new ConcurrentHashMap<>();
+    private final Map<Long, Event> events = new ConcurrentHashMap<>();
 
     @Override
     public Event save(Event event) {
@@ -72,11 +72,9 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Override
     public Optional<Event> getEventByName(String eventName) {
-        return Optional.ofNullable((Event) events
-                .values()
+        return events.values()
                 .stream()
-                .filter(e -> e.getEventName()
-                        .toLowerCase()
-                        .contains(eventName)));
+                .filter(e -> e.getEventName().toLowerCase().contains(eventName.toLowerCase()))
+                .findFirst();
     }
 }
