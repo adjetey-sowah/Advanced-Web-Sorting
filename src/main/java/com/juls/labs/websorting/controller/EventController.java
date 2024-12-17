@@ -155,8 +155,9 @@ public class EventController {
         EntityModel<Event> eventModel = EntityModel.of(event,
                 linkTo(methodOn(EventController.class).findEventById(String.valueOf(id))).withSelfRel(),
                 linkTo(methodOn(EventController.class).allEvents()).withRel("Get all Events"),
+                linkTo(methodOn(EventController.class).getUpcomingEvents()).withRel("Update an Event"),
+                linkTo(methodOn(EventController.class).getEventByDate(event.getDate())).withRel("Get event by date"),
                 linkTo(methodOn(EventController.class).createEvent(new Event())).withRel("Create new Event"));
-                linkTo(methodOn(EventController.class).getUpcomingEvents()).withRel("Update an Event");
 
         return ResponseEntity.ok(eventModel);
     }

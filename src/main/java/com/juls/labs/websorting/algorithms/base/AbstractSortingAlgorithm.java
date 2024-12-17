@@ -4,9 +4,9 @@ public abstract class AbstractSortingAlgorithm implements SortingAlgorithm {
 
     protected  long comparisons;
     protected long swaps;
-    private final long DEFAULT_METRIC_VALUES = 0;
 
     protected void resetMetrics(){
+        long DEFAULT_METRIC_VALUES = 0;
         this.comparisons = DEFAULT_METRIC_VALUES;
         this.swaps = DEFAULT_METRIC_VALUES;
     }

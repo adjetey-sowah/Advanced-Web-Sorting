@@ -66,13 +66,6 @@ public class BucketSort extends AbstractSortingAlgorithm {
         return "Bucket Sort";
     }
 
-    public static void main(String[] args) {
-        BucketSort bucketSort = new BucketSort();
-        SortingResult result = new SortingResult();
-        int[] array = {14,54,12,2,67,11,10};
-        result = bucketSort.sort(array);
-        System.out.println(result);;
 
-    }
     }
 
